@@ -63,15 +63,14 @@ Include the line " #define CT4 " if the fourth C.T. is to be used.
                                                 // The timing values "PHASE2", "PHASE3", "Phasecal2" & "Phasecal3" will be different 
                                                 // depending on whether CT 4 is used or not.
 
+//#define RADIOOUTPUT				// Output via radio module, or not.
+
 #if defined(ARDUINO) && ARDUINO >= 100
 #include "Arduino.h"
 #else
 #include "WProgram.h"
 #endif
 
-#define RF_freq RF12_868MHZ                         // Frequency of RF12B module can be 
-                                                 //    RF12_433MHZ, RF12_868MHZ or RF12_915MHZ. 
-                                                 //  You should use the one matching the module you have.
 #define FILTERSETTLETIME 5000                    //  Time (ms) to allow the filters to settle before sending data
 
 #define PHASE2 8                                 //  Number of samples delay for L2
@@ -83,10 +82,16 @@ Include the line " #define CT4 " if the fourth C.T. is to be used.
                                                  //    Phasecal2 = 0.57
                                                  //    Phasecal3 = 0.97
 
+#ifdef RADIOOUTPUT
+#define RF_freq RF12_868MHZ                      // Frequency of RF12B module can be 
+                                                 //    RF12_433MHZ, RF12_868MHZ or RF12_915MHZ. 
+                                                 //  You should use the one matching the module you have.
 const int nodeID = 10;                           //  emonTx RFM12B node ID
 const int networkGroup = 210;                    //  emonTx RFM12B wireless network group
                                                  //  - needs to be same as emonBase and emonGLCD needs to be same
                                                  //    as emonBase and emonGLCD
+#include <JeeLib.h>                              // Download JeeLib: http://github.com/jcw/jeelib
+#endif
 
 const int UNO = 1;                               // Set to 0 if you are not using the UNO bootloader 
                                                  // (i.e using Duemilanove) - All Atmega's shipped from
@@ -94,8 +99,10 @@ const int UNO = 1;                               // Set to 0 if you are not usin
                                                         
 #include <avr/wdt.h>                             // the UNO bootloader 
 
-#include <JeeLib.h>                              // Download JeeLib: http://github.com/jcw/jeelib
 ISR(WDT_vect) { Sleepy::watchdogEvent(); }
+
+
+#include "emontx_lib.h"
 
 
 //Set Voltage and current input pins
@@ -156,6 +163,7 @@ Serial.begin(9600);
 Serial.println("emonTX Shield CT1234 Voltage 3 Phase example");
 Serial.println("OpenEnergyMonitor.org");
 Serial.print("Node: "); 
+#ifdef RADIOOUTPUT
 Serial.print(nodeID); 
 Serial.print(" Freq: "); 
 if (RF_freq == RF12_433MHZ) Serial.print("433Mhz");
@@ -168,6 +176,7 @@ Serial.println(networkGroup);
 
 rf12_initialize(nodeID, RF_freq, networkGroup);     // initialize RF
 rf12_sleep(RF12_SLEEP);
+#endif
 
 pinMode(LEDpin, OUTPUT);                         // Setup indicator LED
 digitalWrite(LEDpin, HIGH);
@@ -210,18 +219,22 @@ Serial.println(); delay(100);
 
 #endif 
 
+#ifdef RADIOOUTPUT
 emontx.power1 = realPower1;                      // Copy the desired variables ready for transmision
 emontx.power2 = realPower2;
 emontx.power3 = realPower3;
 emontx.power4 = realPower4;
 emontx.Vrms   = Vrms;
+#endif
 
 if (!settled && millis() > FILTERSETTLETIME)     // because millis() returns to zero after 50 days ! 
     settled = true;
     
 if (settled)                                     // send data only after filters have settled
 {  
+#ifdef RADIOOUTPUT
     send_rf_data();                              // *SEND RF DATA* - see emontx_lib
+#endif
     digitalWrite(LEDpin, HIGH); delay(2); digitalWrite(LEDpin, LOW);      // flash LED
     emontx_sleep(3);    
 }
