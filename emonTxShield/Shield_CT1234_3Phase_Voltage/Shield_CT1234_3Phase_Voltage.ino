@@ -91,6 +91,7 @@ const int networkGroup = 210;                    //  emonTx RFM12B wireless netw
                                                  //  - needs to be same as emonBase and emonGLCD needs to be same
                                                  //    as emonBase and emonGLCD
 #include <JeeLib.h>                              // Download JeeLib: http://github.com/jcw/jeelib
+ISR(WDT_vect) { Sleepy::watchdogEvent(); }
 #endif
 
 const int UNO = 1;                               // Set to 0 if you are not using the UNO bootloader 
@@ -99,7 +100,6 @@ const int UNO = 1;                               // Set to 0 if you are not usin
                                                         
 #include <avr/wdt.h>                             // the UNO bootloader 
 
-ISR(WDT_vect) { Sleepy::watchdogEvent(); }
 
 
 #include "emontx_lib.h"
