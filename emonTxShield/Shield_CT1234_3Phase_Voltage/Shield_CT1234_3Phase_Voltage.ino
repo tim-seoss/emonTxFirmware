@@ -186,6 +186,9 @@ if (UNO) wdt_enable(WDTO_8S);                    // Enable anti crash (restart) 
                                                  // Restarts emonTx if sketch hangs for more than 8s
 }
 
+void calcVI3Ph(int cycles, int timeout);
+long readVcc();
+
 //*********************************************************************************************************************
 void loop() 
 { 
