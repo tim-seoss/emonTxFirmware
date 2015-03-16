@@ -2,7 +2,7 @@
 EmonTx Shield CT1234 + 3-phase Voltage example
 
 An example sketch for the emontx module for
-3-phase electricity monitoring, with 4 current transformers 
+3-phase electricity monitoring, with 4 current transformers
 and 1 only voltage transformer
 
 Part of the openenergymonitor.org project
@@ -11,7 +11,7 @@ Licence: GNU GPL V3
 Authors: Glyn Hudson, Trystan Lea
 Builds upon JeeLabs RF12 library and Arduino
 Extended for 3-phase operation: Robert Wall
-V.1  7/11/2013    Derived from emonTx_CT123_3Phase_Voltage.ino 
+V.1  7/11/2013    Derived from emonTx_CT123_3Phase_Voltage.ino
 
 emonTx Shield documentation: http://openenergymonitor.org/emon/modules/emontx/
 emonTx firmware code explanation: http://openenergymonitor.org/emon/modules/emontx/firmware
@@ -20,9 +20,9 @@ emonTx / emonTx Shield calibration instructions: http://openenergymonitor.org/em
 REQUIRES in [Arduino]/libraries
 Arduino.h
 WProgram.h
-avr/wdt.h                                       // the UNO bootloader 
+avr/wdt.h                                       // the UNO bootloader
 JeeLib.h                                        // Download JeeLib: http://github.com/jcw/jeelib
-REQUIRES in project directory 
+REQUIRES in project directory
 emontx_lib.ino
 
 (does NOT require EmonLib)
@@ -40,9 +40,9 @@ in the transformers etc. "Delayed" means a delay of the voltage samples by appro
 POSSIBLE SOURCES OF ERROR
 This method is an approximation. It assumes that the voltages of the three phases remain identical and the angles
 between the voltage vectors remain accurately 120 degrees apart. The lower the fault level of the supply (i.e. the higher
-the impedance), the greater the change in the true voltage will be as a result of load changes, and therefore the 
+the impedance), the greater the change in the true voltage will be as a result of load changes, and therefore the
 inaccuracies that result from these approximations will be greater also.
-If the mains frequency changes, this will appear as a change in real power and power factor for L2 and more so for L3. 
+If the mains frequency changes, this will appear as a change in real power and power factor for L2 and more so for L3.
 
 CALIBRATION
 Adjust Vcal = 234.26 so that the correct voltage for L1 is displayed.
@@ -52,7 +52,7 @@ Connect a pure resistive load (e.g. a heater) to L1 and adjust Phasecal1 to disp
 Do the same for L2 and L3. If it not possible to keep Phasecal within the range 0 - 2, it is permissible to
 change "#define PHASE2 8" and/or "#define PHASE3 18"
 
-The fourth channel may be used, for example, for a PV input. This must be on Phase 1 (meaning the same phase as the CT 
+The fourth channel may be used, for example, for a PV input. This must be on Phase 1 (meaning the same phase as the CT
 connected to Input 1).
 Include the line " #define CT4 " if the fourth C.T. is to be used.
 
@@ -60,7 +60,7 @@ Include the line " #define CT4 " if the fourth C.T. is to be used.
 #define DEBUGGING                                                                                            // enable this line to include debugging print statements
 #define SERIALPRINT                             // include print statement for commissioning - comment this line to exclude
 //#define CT4                                     // uncomment this line if you are using the 4th c.t.
-                                                // The timing values "PHASE2", "PHASE3", "Phasecal2" & "Phasecal3" will be different 
+                                                // The timing values "PHASE2", "PHASE3", "Phasecal2" & "Phasecal3" will be different
                                                 // depending on whether CT 4 is used or not.
 
 //#define RADIOOUTPUT				// Output via radio module, or not.
@@ -83,8 +83,8 @@ Include the line " #define CT4 " if the fourth C.T. is to be used.
                                                  //    Phasecal3 = 0.97
 
 #ifdef RADIOOUTPUT
-#define RF_freq RF12_868MHZ                      // Frequency of RF12B module can be 
-                                                 //    RF12_433MHZ, RF12_868MHZ or RF12_915MHZ. 
+#define RF_freq RF12_868MHZ                      // Frequency of RF12B module can be
+                                                 //    RF12_433MHZ, RF12_868MHZ or RF12_915MHZ.
                                                  //  You should use the one matching the module you have.
 const int nodeID = 10;                           //  emonTx RFM12B node ID
 const int networkGroup = 210;                    //  emonTx RFM12B wireless network group
@@ -94,11 +94,11 @@ const int networkGroup = 210;                    //  emonTx RFM12B wireless netw
 ISR(WDT_vect) { Sleepy::watchdogEvent(); }
 #endif
 
-const int UNO = 1;                               // Set to 0 if you are not using the UNO bootloader 
+const int UNO = 1;                               // Set to 0 if you are not using the UNO bootloader
                                                  // (i.e using Duemilanove) - All Atmega's shipped from
                                                  // OpenEnergyMonitor come with Arduino Uno bootloader
-                                                        
-#include <avr/wdt.h>                             // the UNO bootloader 
+
+#include <avr/wdt.h>                             // the UNO bootloader
 
 
 
@@ -144,33 +144,33 @@ realPower4,
 apparentPower4,
 powerFactor4,
 Irms4,
-Vrms;       
+Vrms;
 
-    
+
 typedef struct { int power1, power2, power3, power4, Vrms; } PayloadTX;        // neat way of packaging data for RF comms
                                                  // (Include all the variables that are desired,
                                                  // ensure the same struct is used to receive)
 
 PayloadTX emontx;                                // create an instance
 
-const int LEDpin = 9;                            // On-board emonTx LED 
+const int LEDpin = 9;                            // On-board emonTx LED
 
 boolean settled = false;
 
-void setup() 
+void setup()
 {
 Serial.begin(9600);
 Serial.println("emonTX Shield CT1234 Voltage 3 Phase example");
 Serial.println("OpenEnergyMonitor.org");
-Serial.print("Node: "); 
+Serial.print("Node: ");
 #ifdef RADIOOUTPUT
-Serial.print(nodeID); 
-Serial.print(" Freq: "); 
+Serial.print(nodeID);
+Serial.print(" Freq: ");
 if (RF_freq == RF12_433MHZ) Serial.print("433Mhz");
 else if (RF_freq == RF12_868MHZ) Serial.print("868Mhz");
-else if (RF_freq == RF12_915MHZ) Serial.print("915Mhz"); 
+else if (RF_freq == RF12_915MHZ) Serial.print("915Mhz");
 else Serial.print("Not set");
-Serial.print(" Network: "); 
+Serial.print(" Network: ");
 Serial.println(networkGroup);
 
 
@@ -181,7 +181,7 @@ rf12_sleep(RF12_SLEEP);
 pinMode(LEDpin, OUTPUT);                         // Setup indicator LED
 digitalWrite(LEDpin, HIGH);
 
-if (UNO) wdt_enable(WDTO_8S);                    // Enable anti crash (restart) watchdog if UNO bootloader is selected. 
+if (UNO) wdt_enable(WDTO_8S);                    // Enable anti crash (restart) watchdog if UNO bootloader is selected.
                                                  //  (Watchdog does not work with duemilanove bootloader)
                                                  // Restarts emonTx if sketch hangs for more than 8s
 }
@@ -191,10 +191,10 @@ long readVcc();
 int freeRam();
 
 //*********************************************************************************************************************
-void loop() 
-{ 
+void loop()
+{
 // Outer loop - Reads Voltages & Currents - Sends results
-calcVI3Ph(11,2000);                              // Calculate all. No.of complete cycles, time-out  
+calcVI3Ph(11,2000);                              // Calculate all. No.of complete cycles, time-out
 
 // Removing these print statements is recommended for normal use (if not required).
 #ifdef SERIALPRINT
@@ -223,7 +223,7 @@ Serial.print(" Free RAM: "); Serial.println(freeRam());
 
 Serial.println(); delay(100);
 
-#endif 
+#endif
 
 #ifdef RADIOOUTPUT
 emontx.power1 = realPower1;                      // Copy the desired variables ready for transmision
@@ -233,16 +233,16 @@ emontx.power4 = realPower4;
 emontx.Vrms   = Vrms;
 #endif
 
-if (!settled && millis() > FILTERSETTLETIME)     // because millis() returns to zero after 50 days ! 
+if (!settled && millis() > FILTERSETTLETIME)     // because millis() returns to zero after 50 days !
     settled = true;
-    
+
 if (settled)                                     // send data only after filters have settled
-{  
+{
 #ifdef RADIOOUTPUT
     send_rf_data();                              // *SEND RF DATA* - see emontx_lib
 #endif
     digitalWrite(LEDpin, HIGH); delay(2); digitalWrite(LEDpin, LOW);      // flash LED
-    emontx_sleep(3);    
+    emontx_sleep(3);
 }
 }
 
@@ -286,11 +286,11 @@ void calcVI3Ph(int cycles, int timeout)
 
     int SupplyVoltage = readVcc();
     int crossCount = -2;                         // Used to measure number of times threshold is crossed.
-    int numberOfSamples = 0;                     // This is now incremented  
+    int numberOfSamples = 0;                     // This is now incremented
     int numberOfPowerSamples = 0;                // Needed because 1 cycle of voltages needs to be stored before use
     boolean lastVCross, checkVCross;             // Used to measure number of times threshold is crossed.
     double storedV[PHASE3];                      // Array to store >240 degrees of voltage samples
-    
+
     //-------------------------------------------------------------------------------------------------------------------------
     // 1) Waits for the waveform to be close to 'zero' (500 adc) part in sin curve.
     //-------------------------------------------------------------------------------------------------------------------------
@@ -307,10 +307,10 @@ void calcVI3Ph(int cycles, int timeout)
 
     //-------------------------------------------------------------------------------------------------------------------------
     // 2) Main measurment loop
-    //------------------------------------------------------------------------------------------------------------------------- 
-    start = millis(); 
+    //-------------------------------------------------------------------------------------------------------------------------
+    start = millis();
 
-    while ((crossCount < cycles * 2) && ((millis()-start)<timeout)) 
+    while ((crossCount < cycles * 2) && ((millis()-start)<timeout))
     {
         lastSampleV=sampleV;                    // Used for digital high pass filter - offset removal
         lastSampleI1=sampleI1;
@@ -318,8 +318,8 @@ void calcVI3Ph(int cycles, int timeout)
         lastSampleI3=sampleI3;
 
         lastFilteredV = filteredV;
-        lastFilteredI1 = filteredI1;  
-        lastFilteredI2 = filteredI2; 
+        lastFilteredI1 = filteredI1;
+        lastFilteredI2 = filteredI2;
         lastFilteredI3 = filteredI3;
 #ifdef CT4
         lastSampleI4=sampleI4;
@@ -352,17 +352,17 @@ void calcVI3Ph(int cycles, int timeout)
         //-----------------------------------------------------------------------------
 
         // C)  Find the number of times the voltage has crossed the initial voltage
-        //        - every 2 crosses we will have sampled 1 wavelength 
+        //        - every 2 crosses we will have sampled 1 wavelength
         //        - so this method allows us to sample an integer number of half wavelengths which increases accuracy
-        //-----------------------------------------------------------------------------       
+        //-----------------------------------------------------------------------------
 
 
-        lastVCross = checkVCross;                     
+        lastVCross = checkVCross;
 
         checkVCross = (sampleV > startV)? true : false;
         if (numberOfSamples==1)
-            lastVCross = checkVCross;                  
-                    
+            lastVCross = checkVCross;
+
         if (lastVCross != checkVCross)
         {
             crossCount++;
@@ -372,7 +372,7 @@ void calcVI3Ph(int cycles, int timeout)
                 sumI1 = 0;
                 sumI2 = 0;
                 sumI3 = 0;
-                sumP1 = 0;                                    
+                sumP1 = 0;
                 sumP2 = 0;
                 sumP3 = 0;
 #ifdef CT4
@@ -385,12 +385,12 @@ void calcVI3Ph(int cycles, int timeout)
 
         //-----------------------------------------------------------------------------
         // D) Root-mean-square method voltage
-        //-----------------------------------------------------------------------------  
+        //-----------------------------------------------------------------------------
         sumV += filteredV * filteredV;          // sum += square voltage values
 
         //-----------------------------------------------------------------------------
         // E) Root-mean-square method current
-        //-----------------------------------------------------------------------------   
+        //-----------------------------------------------------------------------------
         sumI1 += filteredI1 * filteredI1;       // sum += square current values
         sumI2 += filteredI2 * filteredI2;
         sumI3 += filteredI3 * filteredI3;
@@ -400,30 +400,30 @@ void calcVI3Ph(int cycles, int timeout)
 
         //-----------------------------------------------------------------------------
         // F) Phase calibration - for Phase 1: shifts V1 to correct transformer errors
-        //    for phases 2 & 3 delays V1 by 120 degrees & 240 degrees respectively 
+        //    for phases 2 & 3 delays V1 by 120 degrees & 240 degrees respectively
         //    and shifts for fine adjustment and to correct transformer errors.
         //-----------------------------------------------------------------------------
         phaseShiftedV1 = lastFilteredV + Phasecal1 * (filteredV - lastFilteredV);
-        phaseShiftedV2 = storedV[(numberOfSamples-PHASE2-1)%PHASE3] 
-            + Phasecal2 * (storedV[(numberOfSamples-PHASE2)%PHASE3] 
+        phaseShiftedV2 = storedV[(numberOfSamples-PHASE2-1)%PHASE3]
+            + Phasecal2 * (storedV[(numberOfSamples-PHASE2)%PHASE3]
                         - storedV[(numberOfSamples-PHASE2-1)%PHASE3]);
-        phaseShiftedV3 = storedV[(numberOfSamples+1)%PHASE3] 
+        phaseShiftedV3 = storedV[(numberOfSamples+1)%PHASE3]
             + Phasecal3 * (storedV[(numberOfSamples+2)%PHASE3]
                         - storedV[(numberOfSamples+1)%PHASE3]);
-        
+
 
         //-----------------------------------------------------------------------------
         // G) Instantaneous power calc
-        //-----------------------------------------------------------------------------   
+        //-----------------------------------------------------------------------------
         sumP1 += phaseShiftedV1 * filteredI1;   // Sum  += Instantaneous Power
         sumP2 += phaseShiftedV2 * filteredI2;
         sumP3 += phaseShiftedV3 * filteredI3;
 #ifdef CT4
         sumP4 += phaseShiftedV1 * filteredI4;
 #endif
-        
+
         numberOfPowerSamples++;                  // Count number of times looped for Power averages.
-        numberOfSamples++;                      //Count number of times looped.    
+        numberOfSamples++;                      //Count number of times looped.
 
     }
 
@@ -431,22 +431,22 @@ void calcVI3Ph(int cycles, int timeout)
 
     //-------------------------------------------------------------------------------------------------------------------------
     // 3) Post loop calculations
-    //------------------------------------------------------------------------------------------------------------------------- 
+    //-------------------------------------------------------------------------------------------------------------------------
     //Calculation of the root of the mean of the voltage and current squared (rms)
-    //Calibration coefficients applied. 
+    //Calibration coefficients applied.
 
     double V_Ratio = Vcal *((SupplyVoltage/1000.0) / 1023.0);
-    Vrms = V_Ratio * sqrt(sumV / numberOfPowerSamples); 
+    Vrms = V_Ratio * sqrt(sumV / numberOfPowerSamples);
 
     double I_Ratio1 = Ical1 *((SupplyVoltage/1000.0) / 1023.0);
-    Irms1 = I_Ratio1 * sqrt(sumI1 / numberOfPowerSamples); 
+    Irms1 = I_Ratio1 * sqrt(sumI1 / numberOfPowerSamples);
     double I_Ratio2 = Ical2 *((SupplyVoltage/1000.0) / 1023.0);
-    Irms2 = I_Ratio2 * sqrt(sumI2 / numberOfPowerSamples); 
+    Irms2 = I_Ratio2 * sqrt(sumI2 / numberOfPowerSamples);
     double I_Ratio3 = Ical3 *((SupplyVoltage/1000.0) / 1023.0);
-    Irms3 = I_Ratio3 * sqrt(sumI3 / numberOfPowerSamples); 
+    Irms3 = I_Ratio3 * sqrt(sumI3 / numberOfPowerSamples);
 #ifdef CT4
     double I_Ratio4 = Ical4 *((SupplyVoltage/1000.0) / 1023.0);
-    Irms4 = I_Ratio4 * sqrt(sumI4 / numberOfPowerSamples); 
+    Irms4 = I_Ratio4 * sqrt(sumI4 / numberOfPowerSamples);
 #endif
 
     //Calculation power values
@@ -484,11 +484,11 @@ void calcVI3Ph(int cycles, int timeout)
     sumI4 = 0;
     sumP4 = 0;
 #endif
-    //--------------------------------------------------------------------------------------       
+    //--------------------------------------------------------------------------------------
 
 #ifdef DEBUGGING
     // Include these statements for development/debugging only
-    
+
     Serial.print("Total Samples: "); Serial.print(numberOfSamples);
     Serial.print(" Power Samples: "); Serial.print(numberOfPowerSamples);
     Serial.print(" Time: "); Serial.print(millis() - start);
@@ -504,7 +504,7 @@ void calcVI3Ph(int cycles, int timeout)
 
 //*********************************************************************************************************************
 
-long readVcc() 
+long readVcc()
 {
 long result;
 ADMUX = _BV(REFS0) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1);
@@ -518,9 +518,9 @@ return result;
 }
 
 int freeRam () {
-  extern int __heap_start, *__brkval; 
-  int v; 
-  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval); 
+  extern int __heap_start, *__brkval;
+  int v;
+  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
 }
 
 
