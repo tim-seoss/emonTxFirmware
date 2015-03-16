@@ -106,23 +106,23 @@ const int UNO = 1;                               // Set to 0 if you are not usin
 
 
 //Set Voltage and current input pins
-int inPinV = 0;
-int inPinI1 = 1;
-int inPinI2 = 2;
-int inPinI3 = 3;
-int inPinI4 = 4;
+const int inPinV = 0;
+const int inPinI1 = 1;
+const int inPinI2 = 2;
+const int inPinI3 = 3;
+const int inPinI4 = 4;
 //Calibration coefficients
 //These need to be set in order to obtain accurate results
-double Vcal = 234.26;                            // Calibration constant for voltage input
-double Ical1 = 60.60;                            // Calibration constant for current transformer 1
-double Ical2 = 60.60;                            // Calibration constant for current transformer 2
-double Ical3 = 60.60;                            // Calibration constant for current transformer 3
-double Ical4 = 60.60;                            // Calibration constant for current transformer 4
+const double Vcal = 234.26;                            // Calibration constant for voltage input
+const double Ical1 = 60.60;                            // Calibration constant for current transformer 1
+const double Ical2 = 60.60;                            // Calibration constant for current transformer 2
+const double Ical3 = 60.60;                            // Calibration constant for current transformer 3
+const double Ical4 = 60.60;                            // Calibration constant for current transformer 4
 
-double Phasecal1 = 1.00;                         // Calibration constant for phase shift L1
-double Phasecal2 = 1.35;                         // Calibration constant for phase shift L2
-double Phasecal3 = 1.37;                         // Calibration constant for phase shift L3
-double Phasecal4 = 1.00;                         // Calibration constant for phase shift CT 4
+const double Phasecal1 = 1.00;                         // Calibration constant for phase shift L1
+const double Phasecal2 = 1.35;                         // Calibration constant for phase shift L2
+const double Phasecal3 = 1.37;                         // Calibration constant for phase shift L3
+const double Phasecal4 = 1.00;                         // Calibration constant for phase shift CT 4
 
 
 //--------------------------------------------------------------------------------------
