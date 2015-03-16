@@ -186,7 +186,7 @@ if (UNO) wdt_enable(WDTO_8S);                    // Enable anti crash (restart) 
                                                  // Restarts emonTx if sketch hangs for more than 8s
 }
 
-void calcVI3Ph(int cycles, int timeout);
+void calcVI3Ph(int cycles, unsigned int timeout);
 long readVcc();
 int freeRam();
 
@@ -248,7 +248,7 @@ if (settled)                                     // send data only after filters
 
 //*********************************************************************************************************************
 
-void calcVI3Ph(int cycles, int timeout)
+void calcVI3Ph(int cycles, unsigned int timeout)
 {
     //--------------------------------------------------------------------------------------
     // Variable declaration for filters, phase shift, voltages, currents & powers
@@ -270,8 +270,13 @@ void calcVI3Ph(int cycles, int timeout)
     double phaseShiftedV2;
     double phaseShiftedV3;
 
-    double sumV, sumI1, sumI2, sumI3;
-    double sumP1, sumP2, sumP3;             // sq = squared, sum = Sum, inst = instantaneous
+    double sumV  = 0;
+    double sumI1 = 0;
+    double sumI2 = 0;
+    double sumI3 = 0;
+    double sumP1 = 0;                       // sq = squared, sum = Sum, inst = instantaneous
+    double sumP2 = 0;
+    double sumP3 = 0;
 
 
 #ifdef CT4
@@ -288,7 +293,8 @@ void calcVI3Ph(int cycles, int timeout)
     int crossCount = -2;                         // Used to measure number of times threshold is crossed.
     int numberOfSamples = 0;                     // This is now incremented
     int numberOfPowerSamples = 0;                // Needed because 1 cycle of voltages needs to be stored before use
-    boolean lastVCross, checkVCross;             // Used to measure number of times threshold is crossed.
+    boolean lastVCross;                          // Used to measure number of times threshold is crossed.
+    boolean checkVCross = false;                 // Used to measure number of times threshold is crossed.
     double storedV[PHASE3];                      // Array to store >240 degrees of voltage samples
 
     //-------------------------------------------------------------------------------------------------------------------------
