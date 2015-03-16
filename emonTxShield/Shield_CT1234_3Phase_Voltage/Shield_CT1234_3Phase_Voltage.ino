@@ -124,6 +124,7 @@ const double Phasecal2 = 1.35;                         // Calibration constant f
 const double Phasecal3 = 1.37;                         // Calibration constant for phase shift L3
 const double Phasecal4 = 1.00;                         // Calibration constant for phase shift CT 4
 
+const int adcVoltsZeroPoint = 500;
 
 //--------------------------------------------------------------------------------------
 // Variable declaration for filters, phase shift, voltages, currents & powers
@@ -298,16 +299,16 @@ void calcVI3Ph(int cycles, unsigned int timeout)
     double storedV[PHASE3];                      // Array to store >240 degrees of voltage samples
 
     //-------------------------------------------------------------------------------------------------------------------------
-    // 1) Waits for the waveform to be close to 'zero' (500 adc) part in sin curve.
+    // 1) Waits for the waveform to be close to 'zero' in sin curve.
     //-------------------------------------------------------------------------------------------------------------------------
     boolean st = false;                           // an indicator to exit the while loop
 
-    unsigned long start = millis();             // millis()-start makes sure it doesnt get stuck in the loop if there is an error.
+    unsigned long start = millis();               // millis()-start makes sure it doesnt get stuck in the loop if there is an error.
 
     while(st == false)                            // Wait for first zero crossing...
     {
         startV = analogRead(inPinV);            // using the voltage waveform
-        if ((startV < 550) && (startV > 440)) st = true;        // check it's within range
+        if ((startV < (adcVoltsZeroPoint + 50)) && (startV > (adcVoltsZeroPoint - 60))) st = true;        // check it's within range
         if ((millis() - start) > timeout) st = true;
     }
 
