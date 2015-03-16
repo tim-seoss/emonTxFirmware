@@ -258,23 +258,28 @@ void calcVI3Ph(int cycles, int timeout)
     static int lastSampleI1,sampleI1;
     static int lastSampleI2,sampleI2;
     static int lastSampleI3,sampleI3;
-    static int lastSampleI4,sampleI4;
 
 
     static double lastFilteredV,filteredV;      // 'Filtered' is the raw analog value minus the DC offset
     static double lastFilteredI1, filteredI1;
     static double lastFilteredI2, filteredI2;
     static double lastFilteredI3, filteredI3;
-    static double lastFilteredI4, filteredI4;
+
 
     double phaseShiftedV1;                      // Holds the calibrated delayed & phase shifted voltage.
     double phaseShiftedV2;
     double phaseShiftedV3;
+
+    double sumV,sumI1,sumI2,sumI3;
+    double sumP1,sumP2,sumP3;             // sq = squared, sum = Sum, inst = instantaneous
+
+
+#ifdef CT4
+    static int lastSampleI4,sampleI4;
+    static double lastFilteredI4, filteredI4;
     double phaseShiftedV4;
-
-    double sumV,sumI1,sumI2,sumI3,sumI4;
-    double sumP1,sumP2,sumP3,sumP4;             // sq = squared, sum = Sum, inst = instantaneous
-
+    double sumP4, sumI4;
+#endif
 
 
     int startV;                                 // Instantaneous voltage at start of sample window.
@@ -311,13 +316,15 @@ void calcVI3Ph(int cycles, int timeout)
         lastSampleI1=sampleI1;
         lastSampleI2=sampleI2;
         lastSampleI3=sampleI3;
-        lastSampleI4=sampleI4;
 
         lastFilteredV = filteredV;
         lastFilteredI1 = filteredI1;  
         lastFilteredI2 = filteredI2; 
         lastFilteredI3 = filteredI3;
+#ifdef CT4
+        lastSampleI4=sampleI4;
         lastFilteredI4 = filteredI4;
+#endif
 
         //-----------------------------------------------------------------------------
         // A) Read in raw voltage and current samples
@@ -365,11 +372,13 @@ void calcVI3Ph(int cycles, int timeout)
                 sumI1 = 0;
                 sumI2 = 0;
                 sumI3 = 0;
-                sumI4 = 0;
                 sumP1 = 0;                                    
                 sumP2 = 0;
                 sumP3 = 0;
+#ifdef CT4
+                sumI4 = 0;
                 sumP4 = 0;
+#endif
                 numberOfPowerSamples = 0;
             }
         }
@@ -468,11 +477,13 @@ void calcVI3Ph(int cycles, int timeout)
     sumI1 = 0;
     sumI2 = 0;
     sumI3 = 0;
-    sumI4 = 0;
     sumP1 = 0;
     sumP2 = 0;
     sumP3 = 0;
+#ifdef CT4
+    sumI4 = 0;
     sumP4 = 0;
+#endif
     //--------------------------------------------------------------------------------------       
 
 #ifdef DEBUGGING
