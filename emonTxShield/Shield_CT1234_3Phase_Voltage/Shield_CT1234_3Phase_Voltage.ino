@@ -294,15 +294,15 @@ void calcVI3Ph(int cycles, int timeout)
     //-------------------------------------------------------------------------------------------------------------------------
     // 1) Waits for the waveform to be close to 'zero' (500 adc) part in sin curve.
     //-------------------------------------------------------------------------------------------------------------------------
-    boolean st=false;                           // an indicator to exit the while loop
+    boolean st = false;                           // an indicator to exit the while loop
 
     unsigned long start = millis();             // millis()-start makes sure it doesnt get stuck in the loop if there is an error.
 
-    while(st==false)                            // Wait for first zero crossing...
+    while(st == false)                            // Wait for first zero crossing...
     {
         startV = analogRead(inPinV);            // using the voltage waveform
-        if ((startV < 550) && (startV > 440)) st=true;        // check it's within range
-        if ((millis()-start)>timeout) st = true;
+        if ((startV < 550) && (startV > 440)) st = true;        // check it's within range
+        if ((millis() - start) > timeout) st = true;
     }
 
     //-------------------------------------------------------------------------------------------------------------------------
@@ -310,19 +310,19 @@ void calcVI3Ph(int cycles, int timeout)
     //-------------------------------------------------------------------------------------------------------------------------
     start = millis();
 
-    while ((crossCount < cycles * 2) && ((millis()-start)<timeout))
+    while ((crossCount < cycles * 2) && ((millis() - start) < timeout))
     {
-        lastSampleV=sampleV;                    // Used for digital high pass filter - offset removal
-        lastSampleI1=sampleI1;
-        lastSampleI2=sampleI2;
-        lastSampleI3=sampleI3;
+        lastSampleV = sampleV;                    // Used for digital high pass filter - offset removal
+        lastSampleI1 = sampleI1;
+        lastSampleI2 = sampleI2;
+        lastSampleI3 = sampleI3;
 
         lastFilteredV = filteredV;
         lastFilteredI1 = filteredI1;
         lastFilteredI2 = filteredI2;
         lastFilteredI3 = filteredI3;
 #ifdef CT4
-        lastSampleI4=sampleI4;
+        lastSampleI4 = sampleI4;
         lastFilteredI4 = filteredI4;
 #endif
 
@@ -339,15 +339,15 @@ void calcVI3Ph(int cycles, int timeout)
         //-----------------------------------------------------------------------------
         // B) Apply digital high pass filters to remove 2.5V DC offset (to centre wave on 0).
         //-----------------------------------------------------------------------------
-        filteredV = 0.996*(lastFilteredV+(sampleV-lastSampleV));
-        filteredI1 = 0.996*(lastFilteredI1+(sampleI1-lastSampleI1));
-        filteredI2 = 0.996*(lastFilteredI2+(sampleI2-lastSampleI2));
-        filteredI3 = 0.996*(lastFilteredI3+(sampleI3-lastSampleI3));
+        filteredV = 0.996 * (lastFilteredV + (sampleV - lastSampleV));
+        filteredI1 = 0.996 * (lastFilteredI1 + (sampleI1 - lastSampleI1));
+        filteredI2 = 0.996 * (lastFilteredI2 + (sampleI2 - lastSampleI2));
+        filteredI3 = 0.996 * (lastFilteredI3 + (sampleI3 - lastSampleI3));
 #ifdef CT4
-        filteredI4 = 0.996*(lastFilteredI4+(sampleI4-lastSampleI4));
+        filteredI4 = 0.996 * (lastFilteredI4 + (sampleI4 - lastSampleI4));
 #endif
 
-        storedV[numberOfSamples%PHASE3] = filteredV;        // store this voltage sample in circular buffer
+        storedV[numberOfSamples % PHASE3] = filteredV;        // store this voltage sample in circular buffer
 
         //-----------------------------------------------------------------------------
 
@@ -360,7 +360,7 @@ void calcVI3Ph(int cycles, int timeout)
         lastVCross = checkVCross;
 
         checkVCross = (sampleV > startV)? true : false;
-        if (numberOfSamples==1)
+        if (numberOfSamples == 1)
             lastVCross = checkVCross;
 
         if (lastVCross != checkVCross)
@@ -404,12 +404,12 @@ void calcVI3Ph(int cycles, int timeout)
         //    and shifts for fine adjustment and to correct transformer errors.
         //-----------------------------------------------------------------------------
         phaseShiftedV1 = lastFilteredV + Phasecal1 * (filteredV - lastFilteredV);
-        phaseShiftedV2 = storedV[(numberOfSamples-PHASE2-1)%PHASE3]
-            + Phasecal2 * (storedV[(numberOfSamples-PHASE2)%PHASE3]
-                        - storedV[(numberOfSamples-PHASE2-1)%PHASE3]);
-        phaseShiftedV3 = storedV[(numberOfSamples+1)%PHASE3]
-            + Phasecal3 * (storedV[(numberOfSamples+2)%PHASE3]
-                        - storedV[(numberOfSamples+1)%PHASE3]);
+        phaseShiftedV2 = storedV[(numberOfSamples - PHASE2 - 1) % PHASE3]
+            + Phasecal2 * (storedV[(numberOfSamples - PHASE2 ) % PHASE3]
+                        - storedV[(numberOfSamples - PHASE2 - 1) % PHASE3]);
+        phaseShiftedV3 = storedV[(numberOfSamples + 1) % PHASE3]
+            + Phasecal3 * (storedV[(numberOfSamples + 2) % PHASE3]
+                        - storedV[(numberOfSamples + 1) % PHASE3]);
 
 
         //-----------------------------------------------------------------------------
@@ -435,17 +435,17 @@ void calcVI3Ph(int cycles, int timeout)
     //Calculation of the root of the mean of the voltage and current squared (rms)
     //Calibration coefficients applied.
 
-    double V_Ratio = Vcal *((SupplyVoltage/1000.0) / 1023.0);
+    double V_Ratio = Vcal * ((SupplyVoltage / 1000.0) / 1023.0);
     Vrms = V_Ratio * sqrt(sumV / numberOfPowerSamples);
 
-    double I_Ratio1 = Ical1 *((SupplyVoltage/1000.0) / 1023.0);
+    double I_Ratio1 = Ical1 * ((SupplyVoltage / 1000.0) / 1023.0);
     Irms1 = I_Ratio1 * sqrt(sumI1 / numberOfPowerSamples);
-    double I_Ratio2 = Ical2 *((SupplyVoltage/1000.0) / 1023.0);
+    double I_Ratio2 = Ical2 * ((SupplyVoltage / 1000.0) / 1023.0);
     Irms2 = I_Ratio2 * sqrt(sumI2 / numberOfPowerSamples);
-    double I_Ratio3 = Ical3 *((SupplyVoltage/1000.0) / 1023.0);
+    double I_Ratio3 = Ical3 * ((SupplyVoltage / 1000.0) / 1023.0);
     Irms3 = I_Ratio3 * sqrt(sumI3 / numberOfPowerSamples);
 #ifdef CT4
-    double I_Ratio4 = Ical4 *((SupplyVoltage/1000.0) / 1023.0);
+    double I_Ratio4 = Ical4 * ((SupplyVoltage / 1000.0) / 1023.0);
     Irms4 = I_Ratio4 * sqrt(sumI4 / numberOfPowerSamples);
 #endif
 
@@ -494,7 +494,7 @@ void calcVI3Ph(int cycles, int timeout)
     Serial.print(" Time: "); Serial.print(millis() - start);
     Serial.print(" Crossings: "); Serial.println(crossCount);
 
-    for (int j=0; j<PHASE3; j++)
+    for (int j = 0; j<PHASE3; j++)
     {
         Serial.print(storedV[j]); Serial.print(" ");
         Serial.println();
