@@ -194,7 +194,7 @@ int freeRam();
 void loop()
 {
 // Outer loop - Reads Voltages & Currents - Sends results
-calcVI3Ph(11,2000);                              // Calculate all. No.of complete cycles, time-out
+calcVI3Ph(11, 2000);                              // Calculate all. No.of complete cycles, time-out
 
 // Removing these print statements is recommended for normal use (if not required).
 #ifdef SERIALPRINT
@@ -254,13 +254,13 @@ void calcVI3Ph(int cycles, int timeout)
     // Variable declaration for filters, phase shift, voltages, currents & powers
     //--------------------------------------------------------------------------------------
 
-    static int lastSampleV,sampleV;                         // 'sample' holds the raw analog read value, 'lastSample' holds the last sample
-    static int lastSampleI1,sampleI1;
-    static int lastSampleI2,sampleI2;
-    static int lastSampleI3,sampleI3;
+    static int lastSampleV, sampleV;                         // 'sample' holds the raw analog read value, 'lastSample' holds the last sample
+    static int lastSampleI1, sampleI1;
+    static int lastSampleI2, sampleI2;
+    static int lastSampleI3, sampleI3;
 
 
-    static double lastFilteredV,filteredV;      // 'Filtered' is the raw analog value minus the DC offset
+    static double lastFilteredV, filteredV;      // 'Filtered' is the raw analog value minus the DC offset
     static double lastFilteredI1, filteredI1;
     static double lastFilteredI2, filteredI2;
     static double lastFilteredI3, filteredI3;
@@ -270,12 +270,12 @@ void calcVI3Ph(int cycles, int timeout)
     double phaseShiftedV2;
     double phaseShiftedV3;
 
-    double sumV,sumI1,sumI2,sumI3;
-    double sumP1,sumP2,sumP3;             // sq = squared, sum = Sum, inst = instantaneous
+    double sumV, sumI1, sumI2, sumI3;
+    double sumP1, sumP2, sumP3;             // sq = squared, sum = Sum, inst = instantaneous
 
 
 #ifdef CT4
-    static int lastSampleI4,sampleI4;
+    static int lastSampleI4, sampleI4;
     static double lastFilteredI4, filteredI4;
     double phaseShiftedV4;
     double sumP4, sumI4;
@@ -510,7 +510,7 @@ long result;
 ADMUX = _BV(REFS0) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1);
 delay(2);
 ADCSRA |= _BV(ADSC);
-while (bit_is_set(ADCSRA,ADSC));
+while (bit_is_set(ADCSRA, ADSC));
 result = ADCL;
 result |= ADCH<<8;
 result = 1126400L / result;
