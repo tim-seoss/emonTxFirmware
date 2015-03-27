@@ -366,7 +366,7 @@ void calcVI3Ph(int cycles, unsigned int timeout)
 
         lastVCross = checkVCross;
 
-        checkVCross = (sampleV > startV)? true : false;
+        checkVCross = (sampleV > startV) ? true : false;
         if (numberOfSamples == 1)
             lastVCross = checkVCross;
 
@@ -501,7 +501,7 @@ void calcVI3Ph(int cycles, unsigned int timeout)
     Serial.print(" Time: "); Serial.print(millis() - start);
     Serial.print(" Crossings: "); Serial.println(crossCount);
 
-    for (int j = 0; j<PHASE3; j++)
+    for (int j = 0; j < PHASE3; j++)
     {
         Serial.print(storedV[j]); Serial.print(" ");
         Serial.println();
