@@ -71,6 +71,7 @@ Include the line " #define CT4 " if the fourth C.T. is to be used.
 #include "WProgram.h"
 #endif
 
+//#define HARDCODED_VCC_MV 5000
 #define FILTERSETTLETIME 5000                    //  Time (ms) to allow the filters to settle before sending data
 
 #define PHASE2 8                                 //  Number of samples delay for L2
@@ -188,7 +189,7 @@ if (UNO) wdt_enable(WDTO_8S);                    // Enable anti crash (restart) 
 }
 
 void calcVI3Ph(int cycles, unsigned int timeout);
-long readVcc();
+int readVcc();
 
 //*********************************************************************************************************************
 void loop()
@@ -505,16 +506,37 @@ void calcVI3Ph(int cycles, unsigned int timeout)
 }
 
 //*********************************************************************************************************************
+//
+// returns Vcc in millivolts - this is need to provide accurate ADC reading from other inputs, since
+// Arduino etc. use AVCC (unless the circuit board provides a separate Analogue Reference Voltage
+// AREF) when performing analogue to digital conversions.
+//
+// See https://code.google.com/p/tinkerit/wiki/SecretVoltmeter et al. for theory.
+//
+//*********************************************************************************************************************
 
-long readVcc()
+// FIXME Move to library?
+
+int readVcc()
 {
-long result;
-ADMUX = _BV(REFS0) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1);
-delay(2);
-ADCSRA |= _BV(ADSC);
-while (bit_is_set(ADCSRA, ADSC));
-result = ADCL;
-result |= ADCH<<8;
-result = 1126400L / result;
-return result;
+#if defined HARDCODED_VCC_MV
+    return HARDCODED_VCC_MV;
+#else
+    long intRef;
+    const int internalRefmV = 1100;
+    // Read internal 1.1V reference against AVcc
+#if defined (__AVR_ATmega328__) || defined (__AVR_ATmega328P__) 
+    ADMUX = _BV(REFS0) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1);
+#elif defined(__AVR_ATmega32U4__) || defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+    ADMUX = _BV(REFS0) | _BV(MUX4) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1); 
+#else
+#error Do not know how to check Vcc on this processor.  Please update code or hardcode VCC as above if unvarying.
+#endif
+    delay(2);  // Wait for Vref to settle
+    ADCSRA |= _BV(ADSC); // Convert
+    while (bit_is_set(ADCSRA, ADSC));
+    intRef = ADCL;
+    intRef |= ADCH << 8;
+    return ((long)internalRefmV * 1024L) / intRef; // Derive AVcc in mV
+#endif
 }
