@@ -189,7 +189,6 @@ if (UNO) wdt_enable(WDTO_8S);                    // Enable anti crash (restart) 
 
 void calcVI3Ph(int cycles, unsigned int timeout);
 long readVcc();
-int freeRam();
 
 //*********************************************************************************************************************
 void loop()
@@ -219,8 +218,6 @@ Serial.print(" Power 4: "); Serial.print(realPower4);
 Serial.print(" VA 4: "); Serial.print(apparentPower4);
 Serial.print(" PF 4: "); Serial.println(powerFactor4);
 #endif
-
-Serial.print(" Free RAM: "); Serial.println(freeRam());
 
 Serial.println(); delay(100);
 
@@ -434,8 +431,6 @@ void calcVI3Ph(int cycles, unsigned int timeout)
 
     }
 
-    Serial.print(" Free RAM: "); Serial.println(freeRam());
-
     //-------------------------------------------------------------------------------------------------------------------------
     // 3) Post loop calculations
     //-------------------------------------------------------------------------------------------------------------------------
@@ -523,11 +518,3 @@ result |= ADCH<<8;
 result = 1126400L / result;
 return result;
 }
-
-int freeRam () {
-  extern int __heap_start, *__brkval;
-  int v;
-  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
-}
-
-
