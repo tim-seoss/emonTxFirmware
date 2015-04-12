@@ -435,8 +435,8 @@ void calcVI3Ph(int cycles, unsigned int timeout)
     //-------------------------------------------------------------------------------------------------------------------------
     // 3) Post loop calculations
     //-------------------------------------------------------------------------------------------------------------------------
-    //Calculation of the root of the mean of the voltage and current squared (rms)
-    //Calibration coefficients applied.
+    // Calculation of the root of the mean of the voltage and current squared (rms)
+    // Calibration coefficients applied.
 
     double V_Ratio = Vcal * ((DacReference_mV / 1000.0) / 1023.0);
     Vrms = V_Ratio * sqrt(sumV / numberOfPowerSamples);
@@ -452,7 +452,7 @@ void calcVI3Ph(int cycles, unsigned int timeout)
     Irms4 = I_Ratio4 * sqrt(sumI4 / numberOfPowerSamples);
 #endif
 
-    //Calculation power values
+    // Calculation power values
     realPower1 = V_Ratio * I_Ratio1 * sumP1 / numberOfPowerSamples;
     apparentPower1 = Vrms * Irms1;
     powerFactor1 = realPower1 / apparentPower1;
@@ -475,7 +475,7 @@ void calcVI3Ph(int cycles, unsigned int timeout)
     powerFactor4 = 0.0;
 #endif
 
-    //Reset accumulators
+    // Reset accumulators
     sumV = 0;
     sumI1 = 0;
     sumI2 = 0;
