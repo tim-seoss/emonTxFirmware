@@ -20,8 +20,8 @@ emonTx / emonTx Shield calibration instructions: http://openenergymonitor.org/em
 REQUIRES in [Arduino]/libraries
 Arduino.h
 WProgram.h
-avr/wdt.h                                       // the UNO bootloader
-JeeLib.h                                        // Download JeeLib: http://github.com/jcw/jeelib
+avr/wdt.h                                        // the UNO bootloader
+JeeLib.h                                         // Download JeeLib: http://github.com/jcw/jeelib
 REQUIRES in project directory
 emontx_lib.ino
 
@@ -57,13 +57,13 @@ connected to Input 1).
 Include the line " #define CT4 " if the fourth C.T. is to be used.
 
 */
-#define DEBUGGING                                                                                            // enable this line to include debugging print statements
-#define SERIALPRINT                             // include print statement for commissioning - comment this line to exclude
-//#define CT4                                     // uncomment this line if you are using the 4th c.t.
-                                                // The timing values "PHASE2", "PHASE3", "Phasecal2" & "Phasecal3" will be different
-                                                // depending on whether CT 4 is used or not.
+#define DEBUGGING                                // enable this line to include debugging print statements
+#define SERIALPRINT                              // include print statement for commissioning - comment this line to exclude
+//#define CT4                                    // uncomment this line if you are using the 4th c.t.
+                                                 // The timing values "PHASE2", "PHASE3", "Phasecal2" & "Phasecal3" will be different
+                                                 // depending on whether CT 4 is used or not.
 
-//#define RADIOOUTPUT				// Output via radio module, or not.
+//#define RADIOOUTPUT			         // Output via radio module, or not.
 
 #if defined(ARDUINO) && ARDUINO >= 100
 #include "Arduino.h"
@@ -114,16 +114,16 @@ const int inPinI3 = 3;
 const int inPinI4 = 4;
 //Calibration coefficients
 //These need to be set in order to obtain accurate results
-const double Vcal = 234.26;                            // Calibration constant for voltage input
-const double Ical1 = 60.60;                            // Calibration constant for current transformer 1
-const double Ical2 = 60.60;                            // Calibration constant for current transformer 2
-const double Ical3 = 60.60;                            // Calibration constant for current transformer 3
-const double Ical4 = 60.60;                            // Calibration constant for current transformer 4
+const double Vcal = 234.26;                      // Calibration constant for voltage input
+const double Ical1 = 60.60;                      // Calibration constant for current transformer 1
+const double Ical2 = 60.60;                      // Calibration constant for current transformer 2
+const double Ical3 = 60.60;                      // Calibration constant for current transformer 3
+const double Ical4 = 60.60;                      // Calibration constant for current transformer 4
 
-const double Phasecal1 = 1.00;                         // Calibration constant for phase shift L1
-const double Phasecal2 = 1.35;                         // Calibration constant for phase shift L2
-const double Phasecal3 = 1.37;                         // Calibration constant for phase shift L3
-const double Phasecal4 = 1.00;                         // Calibration constant for phase shift CT 4
+const double Phasecal1 = 1.00;                   // Calibration constant for phase shift L1
+const double Phasecal2 = 1.35;                   // Calibration constant for phase shift L2
+const double Phasecal3 = 1.37;                   // Calibration constant for phase shift L3
+const double Phasecal4 = 1.00;                   // Calibration constant for phase shift CT 4
 
 const int adcVoltsZeroPoint = 500;
 
@@ -161,29 +161,29 @@ boolean settled = false;
 
 void setup()
 {
-Serial.begin(9600);
-Serial.println("emonTX Shield CT1234 Voltage 3 Phase example");
-Serial.println("OpenEnergyMonitor.org");
-Serial.print("Node: ");
+    Serial.begin(9600);
+    Serial.println("emonTX Shield CT1234 Voltage 3 Phase example");
+    Serial.println("OpenEnergyMonitor.org");
+    Serial.print("Node: ");
 #ifdef RADIOOUTPUT
-Serial.print(nodeID);
-Serial.print(" Freq: ");
-if (RF_freq == RF12_433MHZ) Serial.print("433Mhz");
-else if (RF_freq == RF12_868MHZ) Serial.print("868Mhz");
-else if (RF_freq == RF12_915MHZ) Serial.print("915Mhz");
-else Serial.print("Not set");
-Serial.print(" Network: ");
-Serial.println(networkGroup);
+    Serial.print(nodeID);
+    Serial.print(" Freq: ");
+    if (RF_freq == RF12_433MHZ) Serial.print("433Mhz");
+    else if (RF_freq == RF12_868MHZ) Serial.print("868Mhz");
+    else if (RF_freq == RF12_915MHZ) Serial.print("915Mhz");
+    else Serial.print("Not set");
+    Serial.print(" Network: ");
+    Serial.println(networkGroup);
 
 
-rf12_initialize(nodeID, RF_freq, networkGroup);     // initialize RF
-rf12_sleep(RF12_SLEEP);
+    rf12_initialize(nodeID, RF_freq, networkGroup);     // initialize RF
+    rf12_sleep(RF12_SLEEP);
 #endif
 
-pinMode(LEDpin, OUTPUT);                         // Setup indicator LED
-digitalWrite(LEDpin, HIGH);
+    pinMode(LEDpin, OUTPUT);                     // Setup indicator LED
+    digitalWrite(LEDpin, HIGH);
 
-if (UNO) wdt_enable(WDTO_8S);                    // Enable anti crash (restart) watchdog if UNO bootloader is selected.
+    if (UNO) wdt_enable(WDTO_8S);                // Enable anti crash (restart) watchdog if UNO bootloader is selected.
                                                  //  (Watchdog does not work with duemilanove bootloader)
                                                  // Restarts emonTx if sketch hangs for more than 8s
 }
@@ -194,55 +194,55 @@ int readVcc();
 //*********************************************************************************************************************
 void loop()
 {
-// Outer loop - Reads Voltages & Currents - Sends results
-calcVI3Ph(11, 2000);                              // Calculate all. No.of complete cycles, time-out
+    // Outer loop - Reads Voltages & Currents - Sends results
+    calcVI3Ph(11, 2000);                         // Calculate all. No.of complete cycles, time-out
 
-// Removing these print statements is recommended for normal use (if not required).
+    // Removing these print statements is recommended for normal use (if not required).
 #ifdef SERIALPRINT
 
-Serial.print("Voltage: "); Serial.println(Vrms);
-Serial.print(" Current 1: "); Serial.print(Irms1);
-Serial.print(" Power 1: "); Serial.print(realPower1);
-Serial.print(" VA 1: "); Serial.print(apparentPower1);
-Serial.print(" PF 1: "); Serial.println(powerFactor1);
-Serial.print(" Current 2: "); Serial.print(Irms2);
-Serial.print(" Power 2: "); Serial.print(realPower2);
-Serial.print(" VA 2: "); Serial.print(apparentPower2);
-Serial.print(" PF 2: "); Serial.println(powerFactor2);
-Serial.print(" Current 3: "); Serial.print(Irms3);
-Serial.print(" Power 3: "); Serial.print(realPower3);
-Serial.print(" VA 3: "); Serial.print(apparentPower3);
-Serial.print(" PF 3: "); Serial.println(powerFactor3);
+    Serial.print("Voltage: "); Serial.println(Vrms);
+    Serial.print(" Current 1: "); Serial.print(Irms1);
+    Serial.print(" Power 1: "); Serial.print(realPower1);
+    Serial.print(" VA 1: "); Serial.print(apparentPower1);
+    Serial.print(" PF 1: "); Serial.println(powerFactor1);
+    Serial.print(" Current 2: "); Serial.print(Irms2);
+    Serial.print(" Power 2: "); Serial.print(realPower2);
+    Serial.print(" VA 2: "); Serial.print(apparentPower2);
+    Serial.print(" PF 2: "); Serial.println(powerFactor2);
+    Serial.print(" Current 3: "); Serial.print(Irms3);
+    Serial.print(" Power 3: "); Serial.print(realPower3);
+    Serial.print(" VA 3: "); Serial.print(apparentPower3);
+    Serial.print(" PF 3: "); Serial.println(powerFactor3);
 #ifdef CT4
-Serial.print(" Current 4: "); Serial.print(Irms4);
-Serial.print(" Power 4: "); Serial.print(realPower4);
-Serial.print(" VA 4: "); Serial.print(apparentPower4);
-Serial.print(" PF 4: "); Serial.println(powerFactor4);
+    Serial.print(" Current 4: "); Serial.print(Irms4);
+    Serial.print(" Power 4: "); Serial.print(realPower4);
+    Serial.print(" VA 4: "); Serial.print(apparentPower4);
+    Serial.print(" PF 4: "); Serial.println(powerFactor4);
 #endif
 
-Serial.println(); delay(100);
+    Serial.println(); delay(100);
 
 #endif
 
 #ifdef RADIOOUTPUT
-emontx.power1 = realPower1;                      // Copy the desired variables ready for transmision
-emontx.power2 = realPower2;
-emontx.power3 = realPower3;
-emontx.power4 = realPower4;
-emontx.Vrms   = Vrms;
+    emontx.power1 = realPower1;                  // Copy the desired variables ready for transmision
+    emontx.power2 = realPower2;
+    emontx.power3 = realPower3;
+    emontx.power4 = realPower4;
+    emontx.Vrms   = Vrms;
 #endif
 
-if (!settled && millis() > FILTERSETTLETIME)     // because millis() returns to zero after 50 days !
-    settled = true;
+    if (!settled && millis() > FILTERSETTLETIME) // because millis() returns to zero after 50 days !
+        settled = true;
 
-if (settled)                                     // send data only after filters have settled
-{
+    if (settled)                                 // send data only after filters have settled
+    {
 #ifdef RADIOOUTPUT
-    send_rf_data();                              // *SEND RF DATA* - see emontx_lib
+        send_rf_data();                          // *SEND RF DATA* - see emontx_lib
 #endif
-    digitalWrite(LEDpin, HIGH); delay(2); digitalWrite(LEDpin, LOW);      // flash LED
-    emontx_sleep(3);
-}
+        digitalWrite(LEDpin, HIGH); delay(2); digitalWrite(LEDpin, LOW);      // flash LED
+        emontx_sleep(3);
+    }
 }
 
 //*********************************************************************************************************************
@@ -253,7 +253,7 @@ void calcVI3Ph(int cycles, unsigned int timeout)
     // Variable declaration for filters, phase shift, voltages, currents & powers
     //--------------------------------------------------------------------------------------
 
-    static int lastSampleV, sampleV;                         // 'sample' holds the raw analog read value, 'lastSample' holds the last sample
+    static int lastSampleV, sampleV;             // 'sample' holds the raw analog read value, 'lastSample' holds the last sample
     static int lastSampleI1, sampleI1;
     static int lastSampleI2, sampleI2;
     static int lastSampleI3, sampleI3;
@@ -265,7 +265,7 @@ void calcVI3Ph(int cycles, unsigned int timeout)
     static double lastFilteredI3, filteredI3;
 
 
-    double phaseShiftedV1;                      // Holds the calibrated delayed & phase shifted voltage.
+    double phaseShiftedV1;                       // Holds the calibrated delayed & phase shifted voltage.
     double phaseShiftedV2;
     double phaseShiftedV3;
 
@@ -273,7 +273,7 @@ void calcVI3Ph(int cycles, unsigned int timeout)
     double sumI1 = 0;
     double sumI2 = 0;
     double sumI3 = 0;
-    double sumP1 = 0;                       // sq = squared, sum = Sum, inst = instantaneous
+    double sumP1 = 0;                            // sq = squared, sum = Sum, inst = instantaneous
     double sumP2 = 0;
     double sumP3 = 0;
 
@@ -286,9 +286,9 @@ void calcVI3Ph(int cycles, unsigned int timeout)
 #endif
 
 
-    int startV;                                 // Instantaneous voltage at start of sample window.
+    int startV;                                  // Instantaneous voltage at start of sample window.
 
-    int SupplyVoltage = readVcc();
+    int DacReference_mV = readVcc();
     int crossCount = -2;                         // Used to measure number of times threshold is crossed.
     int numberOfSamples = 0;                     // This is now incremented
     int numberOfPowerSamples = 0;                // Needed because 1 cycle of voltages needs to be stored before use
@@ -299,13 +299,13 @@ void calcVI3Ph(int cycles, unsigned int timeout)
     //-------------------------------------------------------------------------------------------------------------------------
     // 1) Waits for the waveform to be close to 'zero' in sin curve.
     //-------------------------------------------------------------------------------------------------------------------------
-    boolean st = false;                           // an indicator to exit the while loop
+    boolean st = false;                          // an indicator to exit the while loop
 
-    unsigned long start = millis();               // millis()-start makes sure it doesnt get stuck in the loop if there is an error.
+    unsigned long start = millis();              // millis()-start makes sure it doesnt get stuck in the loop if there is an error.
 
-    while(st == false)                            // Wait for first zero crossing...
+    while(st == false)                           // Wait for first zero crossing...
     {
-        startV = analogRead(inPinV);            // using the voltage waveform
+        startV = analogRead(inPinV);             // using the voltage waveform
         if ((startV < (adcVoltsZeroPoint + 50)) && (startV > (adcVoltsZeroPoint - 60))) st = true;        // check it's within range
         if ((millis() - start) > timeout) st = true;
     }
@@ -317,7 +317,7 @@ void calcVI3Ph(int cycles, unsigned int timeout)
 
     while ((crossCount < cycles * 2) && ((millis() - start) < timeout))
     {
-        lastSampleV = sampleV;                    // Used for digital high pass filter - offset removal
+        lastSampleV = sampleV;                   // Used for digital high pass filter - offset removal
         lastSampleI1 = sampleI1;
         lastSampleI2 = sampleI2;
         lastSampleI3 = sampleI3;
@@ -371,7 +371,7 @@ void calcVI3Ph(int cycles, unsigned int timeout)
         if (lastVCross != checkVCross)
         {
             crossCount++;
-            if (crossCount == 0)              // Started recording at -2 crossings so that one complete cycle has been stored before accumulating.
+            if (crossCount == 0)                 // Started recording at -2 crossings so that one complete cycle has been stored before accumulating.
             {
                 sumV  = 0;
                 sumI1 = 0;
@@ -391,12 +391,12 @@ void calcVI3Ph(int cycles, unsigned int timeout)
         //-----------------------------------------------------------------------------
         // D) Root-mean-square method voltage
         //-----------------------------------------------------------------------------
-        sumV += filteredV * filteredV;          // sum += square voltage values
+        sumV += filteredV * filteredV;           // sum += square voltage values
 
         //-----------------------------------------------------------------------------
         // E) Root-mean-square method current
         //-----------------------------------------------------------------------------
-        sumI1 += filteredI1 * filteredI1;       // sum += square current values
+        sumI1 += filteredI1 * filteredI1;        // sum += square current values
         sumI2 += filteredI2 * filteredI2;
         sumI3 += filteredI3 * filteredI3;
 #ifdef CT4
@@ -420,7 +420,7 @@ void calcVI3Ph(int cycles, unsigned int timeout)
         //-----------------------------------------------------------------------------
         // G) Instantaneous power calc
         //-----------------------------------------------------------------------------
-        sumP1 += phaseShiftedV1 * filteredI1;   // Sum  += Instantaneous Power
+        sumP1 += phaseShiftedV1 * filteredI1;    // Sum += Instantaneous Power
         sumP2 += phaseShiftedV2 * filteredI2;
         sumP3 += phaseShiftedV3 * filteredI3;
 #ifdef CT4
@@ -428,7 +428,7 @@ void calcVI3Ph(int cycles, unsigned int timeout)
 #endif
 
         numberOfPowerSamples++;                  // Count number of times looped for Power averages.
-        numberOfSamples++;                      //Count number of times looped.
+        numberOfSamples++;                       // Count number of times looped.
 
     }
 
@@ -438,17 +438,17 @@ void calcVI3Ph(int cycles, unsigned int timeout)
     //Calculation of the root of the mean of the voltage and current squared (rms)
     //Calibration coefficients applied.
 
-    double V_Ratio = Vcal * ((SupplyVoltage / 1000.0) / 1023.0);
+    double V_Ratio = Vcal * ((DacReference_mV / 1000.0) / 1023.0);
     Vrms = V_Ratio * sqrt(sumV / numberOfPowerSamples);
 
-    double I_Ratio1 = Ical1 * ((SupplyVoltage / 1000.0) / 1023.0);
+    double I_Ratio1 = Ical1 * ((DacReference_mV / 1000.0) / 1023.0);
     Irms1 = I_Ratio1 * sqrt(sumI1 / numberOfPowerSamples);
-    double I_Ratio2 = Ical2 * ((SupplyVoltage / 1000.0) / 1023.0);
+    double I_Ratio2 = Ical2 * ((DacReference_mV / 1000.0) / 1023.0);
     Irms2 = I_Ratio2 * sqrt(sumI2 / numberOfPowerSamples);
-    double I_Ratio3 = Ical3 * ((SupplyVoltage / 1000.0) / 1023.0);
+    double I_Ratio3 = Ical3 * ((DacReference_mV / 1000.0) / 1023.0);
     Irms3 = I_Ratio3 * sqrt(sumI3 / numberOfPowerSamples);
 #ifdef CT4
-    double I_Ratio4 = Ical4 * ((SupplyVoltage / 1000.0) / 1023.0);
+    double I_Ratio4 = Ical4 * ((DacReference_mV / 1000.0) / 1023.0);
     Irms4 = I_Ratio4 * sqrt(sumI4 / numberOfPowerSamples);
 #endif
 
